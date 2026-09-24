@@ -79,7 +79,7 @@ function required(b, fields){
 }
 
 function routePath(event){
-  const raw = event.path || new URL(event.rawUrl).pathname;
+  const raw = event.path || event.rawPath || event.requestContext?.http?.path || "/api/health";
   return raw.replace(/^\/\.netlify\/functions\/api/,"") || "/";
 }
 
@@ -189,3 +189,4 @@ export default async (event) => {
     return json(500,{ok:false,message:e?.message||"Server error"});
   }
 };
+
