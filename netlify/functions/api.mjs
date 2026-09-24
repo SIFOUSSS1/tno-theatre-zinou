@@ -8,10 +8,9 @@ const ADMIN_EMAIL = process.env.ADMIN_EMAIL || "newthatertno@gmail.com";
 const ADMIN_PASSWORD = process.env.ADMIN_PASSWORD || "Zinoutno2018";
 const SECRET = process.env.TNO_ADMIN_SECRET || "CHANGE_THIS_TNO_ADMIN_SECRET";
 
-const json = (statusCode, body, extra={}) => ({
-  statusCode,
+const json = (statusCode, body, extra={}) => new Response(JSON.stringify(body), {
+  status: statusCode,
   headers: {"Content-Type":"application/json; charset=utf-8","Cache-Control":"no-store", ...extra},
-  body: JSON.stringify(body)
 });
 
 const now = () => new Date().toISOString();
@@ -37,16 +36,15 @@ function verify(token){
     return p;
   }catch{return null}
 }
-function isAdmin(event){
-  return !!verify(cookieValue(event.headers?.cookie || event.headers?.Cookie, "tno_admin"));
+function isAdmin(request){
+  return !!verify(cookieValue(request.headers.get("cookie"), "tno_admin"));
 }
-function requireAdmin(event){
-  return isAdmin(event);
+function requireAdmin(request){
+  return isAdmin(request);
 }
-async function body(event){
-  if(!event.body) return {};
-  const raw=event.isBase64Encoded ? Buffer.from(event.body,"base64").toString("utf8") : event.body;
-  return JSON.parse(raw);
+async function body(request){
+  if(!request.body) return {};
+  return await request.json();
 }
 
 async function seedFor(name){
@@ -79,21 +77,23 @@ function required(b, fields){
 }
 
 function routePath(event){
-  const raw = event.path || event.rawPath || event.requestContext?.http?.path || "/api/health";
-  return raw.replace(/^\/\.netlify\/functions\/api/,"") || "/";
+  const raw = event.path || event.rawPath || event.requestContext?.http?.path || '/';
+  if(raw.startsWith('/.netlify/functions/api')) return '/api' + raw.slice('/.netlify/functions/api'.length);
+  return raw.startsWith('/api') ? raw : '/api' + raw;
 }
 
-export default async (event) => {
-  const path=routePath(event);
-  const method=event.httpMethod;
+export default async (request) => {
+  const url = new URL(request.url);
+  const path = url.pathname;
+  const method=request.method;
   try{
     if(method==="GET" && path==="/api/health") return json(200,{ok:true,service:"TNO_NETLIFY",time:now()});
     if(method==="GET" && path==="/api/me"){
-      const p=verify(cookieValue(event.headers?.cookie||event.headers?.Cookie,"tno_admin"));
+      const p=verify(cookieValue(request.headers.get("cookie"),"tno_admin"));
       return json(200,p?{authenticated:true,email:p.email,role:p.role}:{authenticated:false});
     }
     if(method==="POST" && path==="/api/login"){
-      const b=await body(event);
+      const b=await body(request);
       if(b.email===ADMIN_EMAIL && b.password===ADMIN_PASSWORD){
         const token=sign({email:ADMIN_EMAIL,role:"رئيس الفرقة",exp:Date.now()+8*60*60*1000});
         return json(200,{ok:true,email:ADMIN_EMAIL,role:"رئيس الفرقة"},{ "Set-Cookie":`tno_admin=${encodeURIComponent(token)}; HttpOnly; SameSite=Lax; Path=/; Max-Age=28800`});
@@ -113,22 +113,22 @@ export default async (event) => {
     }
 
     if(method==="POST" && path==="/api/public/orders"){
-      const b=await body(event); const miss=required(b,["book","name","phone","wilaya","address","quantity"]); if(miss)return json(400,{ok:false,message:`Missing field: ${miss}`});
+      const b=await body(request); const miss=required(b,["book","name","phone","wilaya","address","quantity"]); if(miss)return json(400,{ok:false,message:`Missing field: ${miss}`});
       const item={id:id("order"),createdAt:now(),status:"new",book:clean(b.book),name:clean(b.name),phone:clean(b.phone),wilaya:clean(b.wilaya),address:clean(b.address),quantity:Number(b.quantity)||1};
       const rows=await readCollection("orders"); rows.unshift(item); await writeCollection("orders",rows); return json(201,{ok:true,item});
     }
     if(method==="POST" && path==="/api/public/applications"){
-      const b=await body(event); const miss=required(b,["prenom","nom","email","wilaya","role","message"]); if(miss)return json(400,{ok:false,message:`Missing field: ${miss}`});
+      const b=await body(request); const miss=required(b,["prenom","nom","email","wilaya","role","message"]); if(miss)return json(400,{ok:false,message:`Missing field: ${miss}`});
       const item={id:id("application"),createdAt:now(),status:"new",prenom:clean(b.prenom),nom:clean(b.nom),email:clean(b.email),phone:clean(b.phone||""),wilaya:clean(b.wilaya),role:clean(b.role),message:clean(b.message)};
       const rows=await readCollection("applications"); rows.unshift(item); await writeCollection("applications",rows); return json(201,{ok:true,item});
     }
     if(method==="POST" && path==="/api/applications/public"){
-      const b=await body(event); const miss=required(b,["prenom","nom","email","wilaya","role","message"]); if(miss)return json(400,{ok:false,message:`Missing field: ${miss}`});
+      const b=await body(request); const miss=required(b,["prenom","nom","email","wilaya","role","message"]); if(miss)return json(400,{ok:false,message:`Missing field: ${miss}`});
       const item={id:id("application"),createdAt:now(),status:"new",prenom:clean(b.prenom),nom:clean(b.nom),email:clean(b.email),phone:clean(b.phone||""),wilaya:clean(b.wilaya),role:clean(b.role),message:clean(b.message)};
       const rows=await readCollection("applications"); rows.unshift(item); await writeCollection("applications",rows); return json(201,{ok:true,item});
     }
     if(method==="POST" && path==="/api/public/tickets"){
-      const b=await body(event); const miss=required(b,["ticketId","name","phone","quantity"]); if(miss)return json(400,{ok:false,message:`Missing field: ${miss}`});
+      const b=await body(request); const miss=required(b,["ticketId","name","phone","quantity"]); if(miss)return json(400,{ok:false,message:`Missing field: ${miss}`});
       const tickets=await readCollection("tickets"), t=tickets.find(x=>x.id===clean(b.ticketId)&&x.visible!==false&&x.status!=="closed");
       if(!t)return json(404,{ok:false,message:"Ticket event unavailable"});
       const q=Math.max(1,Number(b.quantity)||1);
@@ -149,8 +149,8 @@ export default async (event) => {
     }
 
     if(path==="/api/upload" && method==="POST"){
-      if(!requireAdmin(event))return json(401,{ok:false,message:"Unauthorized"});
-      const b=await body(event);
+      if(!requireAdmin(request))return json(401,{ok:false,message:"Unauthorized"});
+      const b=await body(request);
       const m=String(b.data||"").match(/^data:(image\/(?:png|jpeg|jpg|webp|gif));base64,(.+)$/s);
       if(!m)return json(400,{ok:false,message:"invalid_image"});
       const ext=m[1].includes("png")?".png":m[1].includes("webp")?".webp":m[1].includes("gif")?".gif":".jpg";
@@ -161,21 +161,21 @@ export default async (event) => {
     }
 
     if(path==="/api/dashboard" && method==="GET"){
-      if(!requireAdmin(event))return json(401,{ok:false,message:"Unauthorized"});
+      if(!requireAdmin(request))return json(401,{ok:false,message:"Unauthorized"});
       const entries=await Promise.all(collections.map(async c=>[c,await readCollection(c)]));
       return json(200,Object.fromEntries(entries));
     }
 
     const m=path.match(/^\/api\/(orders|applications|press|agenda|shows|gallery|books|president|members|tickets|ticketBookings)(?:\/([^/]+))?$/);
     if(m){
-      if(!requireAdmin(event))return json(401,{ok:false,message:"Unauthorized"});
+      if(!requireAdmin(request))return json(401,{ok:false,message:"Unauthorized"});
       const c=m[1], itemId=m[2];
       const rows=await readCollection(c);
       if(method==="POST"&&!itemId){
-        const b=await body(event);const row={...b,id:b.id||id(c.replace(/s$/,"")),createdAt:b.createdAt||now(),updatedAt:now()};rows.unshift(row);await writeCollection(c,rows);return json(201,{ok:true,item:row});
+        const b=await body(request);const row={...b,id:b.id||id(c.replace(/s$/,"")),createdAt:b.createdAt||now(),updatedAt:now()};rows.unshift(row);await writeCollection(c,rows);return json(201,{ok:true,item:row});
       }
       if(method==="PATCH"&&itemId){
-        const b=await body(event);const i=rows.findIndex(x=>x.id===itemId);if(i<0)return json(404,{ok:false,message:"Not found"});
+        const b=await body(request);const i=rows.findIndex(x=>x.id===itemId);if(i<0)return json(404,{ok:false,message:"Not found"});
         rows[i]={...rows[i],...b,id:rows[i].id,updatedAt:now()};await writeCollection(c,rows);return json(200,{ok:true,item:rows[i]});
       }
       if(method==="DELETE"&&itemId){
@@ -189,4 +189,14 @@ export default async (event) => {
     return json(500,{ok:false,message:e?.message||"Server error"});
   }
 };
+
+
+
+
+
+
+
+
+
+
 
