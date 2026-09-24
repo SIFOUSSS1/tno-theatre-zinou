@@ -1,0 +1,8 @@
+{
+  "name": "tno-theatre-oran-netlify",
+  "version": "6.0.0",
+  "private": true,
+  "dependencies": {
+    "@netlify/blobs": "^10.3.0"
+  }
+}

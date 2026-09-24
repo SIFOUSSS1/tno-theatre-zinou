@@ -1,0 +1,98 @@
+[
+  {
+    "id": "photo-01",
+    "title": "photo-troupe-01.jpeg",
+    "src": "assets/photo-troupe/photo-troupe-01.jpeg",
+    "group": "PHOTO TROUPE"
+  },
+  {
+    "id": "photo-02",
+    "title": "photo-troupe-02.jpeg",
+    "src": "assets/photo-troupe/photo-troupe-02.jpeg",
+    "group": "PHOTO TROUPE"
+  },
+  {
+    "id": "photo-03",
+    "title": "photo-troupe-03.jpeg",
+    "src": "assets/photo-troupe/photo-troupe-03.jpeg",
+    "group": "PHOTO TROUPE"
+  },
+  {
+    "id": "photo-04",
+    "title": "photo-troupe-04.jpeg",
+    "src": "assets/photo-troupe/photo-troupe-04.jpeg",
+    "group": "PHOTO TROUPE"
+  },
+  {
+    "id": "photo-05",
+    "title": "photo-troupe-05.jpeg",
+    "src": "assets/photo-troupe/photo-troupe-05.jpeg",
+    "group": "PHOTO TROUPE"
+  },
+  {
+    "id": "photo-06",
+    "title": "photo-troupe-06.jpeg",
+    "src": "assets/photo-troupe/photo-troupe-06.jpeg",
+    "group": "PHOTO TROUPE"
+  },
+  {
+    "id": "photo-07",
+    "title": "photo-troupe-07.jpeg",
+    "src": "assets/photo-troupe/photo-troupe-07.jpeg",
+    "group": "PHOTO TROUPE"
+  },
+  {
+    "id": "photo-08",
+    "title": "photo-troupe-08.jpeg",
+    "src": "assets/photo-troupe/photo-troupe-08.jpeg",
+    "group": "PHOTO TROUPE"
+  },
+  {
+    "id": "photo-09",
+    "title": "photo-troupe-09.jpeg",
+    "src": "assets/photo-troupe/photo-troupe-09.jpeg",
+    "group": "PHOTO TROUPE"
+  },
+  {
+    "id": "photo-10",
+    "title": "photo-troupe-10.jpeg",
+    "src": "assets/photo-troupe/photo-troupe-10.jpeg",
+    "group": "PHOTO TROUPE"
+  },
+  {
+    "id": "junior-01",
+    "title": "tno-junior-01.jpeg",
+    "src": "assets/tno-junior/tno-junior-01.jpeg",
+    "group": "TNO JUNIOR"
+  },
+  {
+    "id": "junior-02",
+    "title": "tno-junior-02.jpeg",
+    "src": "assets/tno-junior/tno-junior-02.jpeg",
+    "group": "TNO JUNIOR"
+  },
+  {
+    "id": "junior-03",
+    "title": "tno-junior-03.jpeg",
+    "src": "assets/tno-junior/tno-junior-03.jpeg",
+    "group": "TNO JUNIOR"
+  },
+  {
+    "id": "junior-04",
+    "title": "tno-junior-04.jpeg",
+    "src": "assets/tno-junior/tno-junior-04.jpeg",
+    "group": "TNO JUNIOR"
+  },
+  {
+    "id": "junior-05",
+    "title": "tno-junior-05.jpeg",
+    "src": "assets/tno-junior/tno-junior-05.jpeg",
+    "group": "TNO JUNIOR"
+  },
+  {
+    "id": "junior-06",
+    "title": "tno-junior-06.jpeg",
+    "src": "assets/tno-junior/tno-junior-06.jpeg",
+    "group": "TNO JUNIOR"
+  }
+]

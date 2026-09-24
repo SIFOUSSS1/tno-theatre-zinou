@@ -1,0 +1,35 @@
+[
+  {
+    "id": "show-qabil",
+    "no": "01",
+    "label": "QABIL",
+    "title": "قابيل — ملحمة الهوموسابيان",
+    "fr": "Une pièce silencieuse fondée sur le corps et l’image, mise en scène par Yahiya Zine Eddine Ben Hamou.",
+    "ar": "مسرحية صامتة تعتمد على الجسد والصورة، أخرجها الشاب يحيى زين الدين بن حمو.",
+    "image": "assets/qabil.jpg",
+    "page": "spectacle-qabil.html",
+    "performances": "288"
+  },
+  {
+    "id": "show-maqabl-nour",
+    "no": "02",
+    "label": "MAQABL NOUR",
+    "title": "ما قبل النور",
+    "fr": "Une œuvre théâtrale qui revisite la mémoire du bombardement de la place Tahtaha à Oran par l’OAS, le 28 février 1962.",
+    "ar": "عمل مسرحي يستذكر تفجير ساحة الطحطاحة بوهران من طرف منظمة الجيش السري OAS يوم 28 فيفري 1962.",
+    "image": "assets/maqabl-nour.jpg",
+    "page": "spectacle-maqabl-nour.html",
+    "performances": ""
+  },
+  {
+    "id": "show-philophobia",
+    "no": "03",
+    "label": "PHILOPHOBIA",
+    "title": "فيلوفوبيا",
+    "fr": "Une pièce algérienne sur la peur de l’engagement et des relations affectives, écrite et mise en scène par Yahiya Zine Eddine Ben Hamou.",
+    "ar": "مسرحية جزائرية حول الخوف من الارتباط والعلاقات العاطفية، من تأليف وإخراج يحيى زين الدين بن حمو.",
+    "image": "assets/philophobia.jpg",
+    "page": "spectacle-philophobia.html",
+    "performances": ""
+  }
+]

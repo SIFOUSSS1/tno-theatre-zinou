@@ -1,0 +1,4 @@
+[
+  {"id":"book-01","title":"تجليات الوهراني","type":"نصوص","author":"يحي بن حمو","cover":"assets/tejalat-al-wahrani.jpeg","visible":true},
+  {"id":"book-02","title":"تراتيل المراهقة","type":"مجموعة شعرية","author":"يحي بن حمو","cover":"assets/taratil-al-murahaqa.jpeg","visible":true}
+]
